@@ -1,77 +1,46 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface BranchLocation {
+interface Hospital {
+  hospital_id: number;
+  name: string;
   address: string;
-  geohash: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
+  phone_number: string;
 }
 
-interface BranchAttributes {
-  branch_name: string;
-  branch_code: string;
-  location: BranchLocation;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-}
-
-interface Branch {
-  id: number;
-  attributes: BranchAttributes;
-}
-
-interface ApiResponse {
-  data: Branch[];
-  meta: {
-    pagination: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
-}
-
-const BranchesComponent: React.FC = () => {
-  const [branches, setBranches] = useState<Branch[]>([]);
+const HospitalsComponent: React.FC = () => {
+  const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBranches = async () => {
+  const fetchHospitals = async () => {
     try {
-      const response = await axios.get('https://vivid-fellowship-82178cbee7.strapiapp.com/api/branches');
-      setBranches(response.data.data); // Menyimpan data cabang
+      const response = await axios.get('/hospitals'); // Using the proxied route
+      setHospitals(response.data); // Save hospitals data
     } catch (err) {
-      setError('Failed to fetch branches'); // Menangani kesalahan
+      setError('Failed to fetch hospitals'); // Handle error
     } finally {
-      setLoading(false); // Mengubah status loading
+      setLoading(false); // Change loading status
     }
   };
 
   useEffect(() => {
-    fetchBranches(); // Panggil fungsi fetching saat komponen dipasang
+    fetchHospitals(); // Call fetching function when component mounts
   }, []);
 
-  if (loading) return <div>Loading...</div>; // Menampilkan loading
-  if (error) return <div>{error}</div>; // Menampilkan error jika ada
+  if (loading) return <div>Loading...</div>; // Show loading indicator
+  if (error) return <div>{error}</div>; // Show error message
 
   return (
     <div>
-      <h1>Branches</h1>
+      <h1>Hospitals</h1>
       <ul>
-        {branches.map((branch) => (
-          <li key={branch.id}>
-            <h2>{branch.attributes.branch_name} ({branch.attributes.branch_code})</h2>
-            <p>Address: {branch.attributes.location.address}</p>
-            <p>Coordinates: Lat {branch.attributes.location.coordinates.lat}, Lng {branch.attributes.location.coordinates.lng}</p>
-            <p>Created At: {branch.attributes.createdAt}</p>
-            <p>Updated At: {branch.attributes.updatedAt}</p>
-            <p>Published At: {branch.attributes.publishedAt}</p>
+        {hospitals.map((hospital) => (
+          <li key={hospital.hospital_id}>
+            <h2>{hospital.name}</h2>
+            <p>Address: {hospital.address}</p>
+            <p>Phone Number: {hospital.phone_number}</p>
           </li>
         ))}
       </ul>
@@ -79,4 +48,4 @@ const BranchesComponent: React.FC = () => {
   );
 };
 
-export default BranchesComponent;
+export default HospitalsComponent;
