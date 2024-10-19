@@ -57,3 +57,45 @@ body {
   animation: slideOut 0.5s forwards;
 }
 
+/* Animasi kedap-kedip untuk teks dan logo */
+@keyframes text-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-text-blink {
+  animation: text-blink 1.5s ease-in-out infinite;
+}
+
+/* Animasi fade dan kedap-kedip lambat untuk lingkaran besar */
+@keyframes fade-blink-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.animate-fade-blink-slow {
+  animation: fade-blink-slow 2s ease-in-out infinite;
+}
+
+/* Animasi fade dan kedap-kedip cepat untuk lingkaran kecil */
+@keyframes fade-blink-fast {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+.animate-fade-blink-fast {
+  animation: fade-blink-fast 1s ease-in-out infinite;
+}
+
