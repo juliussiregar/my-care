@@ -1,7 +1,10 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Phonetop from "./components/phonetop";
+import TransitionLayout from "./TransitionLayout"; 
+import './transitions.css'; 
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,9 +32,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="w-[360px] mx-auto min-h-screen ">
-          <Phonetop/>
-          {children}
+        <div className="w-[360px] mx-auto min-h-screen">
+          <Phonetop />
+          <TransitionLayout>{children}</TransitionLayout>
         </div>
       </body>
     </html>
