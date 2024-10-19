@@ -13,10 +13,14 @@ const config: Config = {
         foreground: "var(--foreground)",
         primary: "#0D0DCD", // Warna utama (primary)
         secondary: "#000096", 
-        default: "#191F2A"
+        default: "#191F2A",
+      },
+      fontFamily: {
+        'open-sans': ['Open Sans', 'sans-serif'], // Adding Open Sans font
       },
     },
   },
   plugins: [],
 };
+
 export default config;

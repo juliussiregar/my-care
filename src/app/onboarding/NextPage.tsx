@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface NextPageProps {
@@ -10,13 +10,19 @@ interface NextPageProps {
 
 const NextPage: React.FC<NextPageProps> = ({ onBackClick }) => {
     const router = useRouter();
+    const [isSliding, setIsSliding] = useState(false);
 
     const handleNextClick = () => {
-        router.push('onboarding/location');
+        setIsSliding(true); // Aktifkan animasi slide-out
+
+        // Tunggu sampai animasi selesai, lalu navigasikan ke halaman berikutnya
+        setTimeout(() => {
+            router.push('onboarding/location');
+        }, 500); // Durasi animasi slide harus sesuai dengan animasi CSS (0.5s)
     };
 
     return (
-        <div className="flex flex-col items-center">
+        <div className={`flex flex-col items-center ${isSliding ? 'slide-out' : 'slide-in'}`}>
             <Image src="/image1.png" alt='logo' width={75} height={75} className='mt-24' />
             <h1 className="font-sarabun text-[28px] font-extrabold leading-[34px] text-center text-primary mt-4">
                 My Care
@@ -76,15 +82,13 @@ const NextPage: React.FC<NextPageProps> = ({ onBackClick }) => {
                         style={{
                             width: '75px',
                             height: '32px',
-                            borderRadius: '8px 8px 8px 8px',
+                            borderRadius: '8px',
                         }}
                     >
                         Lanjut
                     </button>
-
                 </div>
             </div>
-
         </div>
     );
 };
