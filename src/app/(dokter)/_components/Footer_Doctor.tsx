@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 const Footer: React.FC = () => {
     const pathname = usePathname();
     return (
-        <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center h-[68px] bg-white p-4 shadow-md">
+        <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center h-[68px] bg-white p-4 shadow-md border-t-[1px]">
             <Link href="/home" className={`flex flex-col items-center ${pathname === "/home" ? "text-primary" : "text-black"} hover:text-primary`}>
                 {/* SVG for Beranda */}
                 <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">

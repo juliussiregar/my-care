@@ -1,18 +1,18 @@
 // src/app/Home.tsx
 "use client";
 
-import ActionButtons from "./_components/ActionButtons";
-import Header from "./_components/Header";
-import HomeIcons from "./_components/HomeIcons";
-import LoyaltyPoints from "./_components/LoyaltyPoints";
-import BannerCarousel from "./_components/BannerCaraousel";
-import Berita from "./_components/Berita";
+import ActionButtons from "../_components/ActionButtons";
+import HomeIcons from "../_components/HomeIcons";
+import LoyaltyPoints from "../_components/LoyaltyPoints";
+import BannerCarousel from "../_components/BannerCaraousel";
+import Berita from "../_components/Berita";
 import Footer from "../_components/Footer";
+import Header1 from "../_components/Header1";
 
 const Beranda: React.FC = () => {
     return (
         <div className="flex flex-col min-h-screen pb-[68px]">
-            <Header />
+            <Header1/>
             <ActionButtons />
             <LoyaltyPoints />
             <HomeIcons />
