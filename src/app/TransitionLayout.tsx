@@ -2,12 +2,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import Loading from './loading'; // Ensure to import your Loading component
+import { usePathname } from "next/navigation"; 
+import Loading from './loading'; 
 
 const TransitionLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [direction, setDirection] = useState("slide-in");
 

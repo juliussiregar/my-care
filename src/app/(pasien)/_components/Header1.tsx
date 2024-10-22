@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-const Header: React.FC = () => {
+const Header1: React.FC = () => {
     return (
         <div className="flex h-[56px] items-center justify-between ml-4 mr-4">
             <p
@@ -18,4 +18,4 @@ const Header: React.FC = () => {
     );
 };
 
-export default Header;
+export default Header1;

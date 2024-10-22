@@ -2,7 +2,6 @@ import React from 'react';
 import Header from './_components/Header';
 import WelcomeCard from './_components/WelcomeCard';
 import Schedule from './_components/Schedule';
-import Image from 'next/image';
 import ScheduleCard from './_components/ScheduleCard';
 import Footer from '../_components/Footer_Doctor';
 
