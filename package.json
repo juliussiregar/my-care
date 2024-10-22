@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
     "@react-google-maps/api": "^2.20.3",
     "@types/jwt-decode": "^2.2.1",
-    "@hookform/resolvers": "^3.9.0",
     "axios": "^1.7.7",
     "jwt-decode": "^4.0.0",
     "next": "14.2.15",
@@ -19,6 +19,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.1",
+    "react-router-dom": "^6.27.0",
     "yup": "^1.4.0",
     "zod": "^3.23.8"
   },
