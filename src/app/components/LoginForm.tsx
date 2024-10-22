@@ -208,13 +208,13 @@ const LoginForm: React.FC = () => {
                     </form>
                     <div className="mt-14 text-center text-gray-500 text-sm">
                         Belum punya akun?
-                        <p
+                        <span
                             // href="/auth/register"
                             className="text-blue-700"
                         >
                             {" "}
                             Silakan register
-                        </p>
+                        </span>
                     </div>
                 </div>
 
