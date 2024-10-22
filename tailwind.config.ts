@@ -10,6 +10,9 @@ const config: Config = {
     extend: {
       colors: {
         background: "var(--background)",
+        backgroundImage: {
+          'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        },
         foreground: "var(--foreground)",
         primary: "#0D0DCD", // Warna utama (primary)
         secondary: "#000096", 
