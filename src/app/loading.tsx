@@ -24,6 +24,7 @@ const Loading: React.FC = () => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }}
+        priority
       />
 
       {/* Gambar lingkaran kecil (loading1.png) dengan efek fade mencolok */}

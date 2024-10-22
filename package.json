@@ -10,15 +10,20 @@
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.3",
+    "@types/jwt-decode": "^2.2.1",
     "@hookform/resolvers": "^3.9.0",
     "axios": "^1.7.7",
+    "jwt-decode": "^4.0.0",
     "next": "14.2.15",
     "next-auth": "^4.24.8",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.53.1",
+    "yup": "^1.4.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/next-auth": "^3.13.0",
     "@types/node": "^20",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18",

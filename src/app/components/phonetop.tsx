@@ -29,6 +29,7 @@ const Phonetop = () => {
           left: '278.67px',
           opacity: 1, 
         }}
+        priority
       />
     </div>
   );
