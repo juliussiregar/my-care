@@ -125,3 +125,67 @@ body {
   animation: slide-down 0.3s ease-out forwards;
 }
 
+/* Style untuk kalender */
+.react-datepicker {
+  width: 100%;
+  border: none;
+}
+
+.react-datepicker__header {
+  background-color: #F3F4F6; /* Warna background header */
+  border-bottom: none;
+}
+
+.react-datepicker__month-container {
+  margin-top: 20px;
+}
+
+.react-datepicker__current-month {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1F2D3D; /* Warna untuk bulan dan tahun */
+}
+
+.react-datepicker__day-name {
+  color: #6B7280; /* Warna untuk nama hari */
+  font-size: 14px;
+}
+
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day--today {
+  background-color: transparent;
+  border: none;
+  color: #111827;
+}
+
+.react-datepicker__day {
+  width: 35px;
+  height: 35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.166rem;
+  color: #9CA3AF; /* Warna hari yang tidak tersedia */
+  font-size: 16px;
+  border-radius: 0;
+}
+
+.react-datepicker__day:hover {
+  background-color: #E5E7EB;
+}
+
+.react-datepicker__day--doctor-available {
+  color: #4CAF50; /* Warna hijau untuk hari tersedia */
+  border-bottom: 2px solid #4CAF50; /* Garis di bawah hari tersedia */
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--doctor-available:hover {
+  background-color: transparent;
+  color: #4CAF50;
+  border-bottom: 2px solid #4CAF50;
+}
+
+.react-datepicker__day--outside-month {
+  visibility: hidden; /* Sembunyikan tanggal di luar bulan */
+}
