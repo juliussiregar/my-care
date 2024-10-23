@@ -1,82 +1,199 @@
-"use client"; // Indicate that this is a client component
+// src/app/(pasien)/beranda/janji-temu/[id]/page.tsx
+
+"use client";
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation'; // Import useParams from next/navigation
+import { useDispatch } from 'react-redux';
+import { setAppointmentData } from '@/features/appointment/appointmentSlice';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Doctor } from '@/types/doctor';
 import { fetchDoctorById } from '@/pages/api/doctor';
+import Header from '@/app/(pasien)/_components/Header';
+import DoctorProfile from './_components/DoctorProfile';
+import PilihJadwal from './_components/PilihJadwal';
+import CalenderPas from './_components/CalenderPas';
 
-export default function UserDetails() {
-    const { id } = useParams<{ id: string }>(); // Use useParams to get the 'id' from the URL
+export default function Appointment() {
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const id = window.location.pathname.split('/').pop();
 
     const [doctor, setDoctor] = useState<Doctor | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [timeSlots, setTimeSlots] = useState<string[]>([]);
+    const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
     useEffect(() => {
         if (id) {
-            // Fetch the doctor data by ID when the component mounts
             const fetchData = async () => {
                 try {
-                    const fetchedDoctor = await fetchDoctorById(Number(id));
-                    setDoctor(fetchedDoctor);
+                    const fetchedData = await fetchDoctorById(Number(id));
+                    const doctorDetails = Array.isArray(fetchedData) ? fetchedData[0] : null;
+                    setDoctor(doctorDetails);
                 } catch (error) {
                     console.error('Error fetching doctor:', error);
-                } finally {
-                    setLoading(false);
                 }
             };
-
             fetchData();
         }
     }, [id]);
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    useEffect(() => {
+        if (selectedDate && doctor) {
+            generateTimeSlots(selectedDate);
+        }
+    }, [selectedDate, doctor]);
+
+    const generateTimeSlots = (date: Date) => {
+        const dayOfWeek = date.toLocaleDateString('id-ID', { weekday: 'long' }).toLowerCase();
+        const availability = doctor?.availability[dayOfWeek];
+
+        if (availability) {
+            const [start, end] = availability.split(' - ');
+            const startTime = new Date(`1970-01-01T${convertTo24Hour(start)}`);
+            const endTime = new Date(`1970-01-01T${convertTo24Hour(end)}`);
+            const slots = [];
+
+            let currentTime = startTime;
+            while (currentTime < endTime) {
+                slots.push(currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
+                currentTime.setHours(currentTime.getHours() + 1);
+            }
+            setTimeSlots(slots);
+        } else {
+            setTimeSlots([]);
+        }
+    };
+
+    const convertTo24Hour = (time: string) => {
+        const [hours, minutes, period] = time.match(/(\d+):(\d+) (\w+)/)?.slice(1) || [];
+        let hour = parseInt(hours, 10);
+        if (period.toLowerCase() === 'pm' && hour < 12) hour += 12;
+        if (period.toLowerCase() === 'am' && hour === 12) hour = 0;
+        return `${hour.toString().padStart(2, '0')}:${minutes}`;
+    };
+
+    const handleTimeSlotClick = (slot: string) => {
+        setSelectedTime(slot);
+    };
+
+    const handleOptionSelect = (option: string) => {
+        if (option === "Pribadi") {
+            setSelectedOption(option);
+        }
+    };
+
+    const handleContinue = () => {
+        if (!selectedDate || !selectedTime || !selectedOption || !id) return;
+
+        // Format the appointment date using toLocaleDateString to prevent timezone issues
+        const appointmentDate = selectedDate.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
+        const appointmentTime = `${selectedTime}:00`;
+
+        // Dispatch the data to Redux
+        dispatch(setAppointmentData({
+            doctor_name: doctor?.name ?? null,
+            doctor_specialization: doctor?.specialization ?? null,
+            doctor_id: id,
+            hospital_id: 1,
+            appointment_date: appointmentDate,
+            appointment_time: appointmentTime,
+            type: selectedOption,
+        }));
+
+        // Navigate to the next page
+        router.push(`${id}/Details`);
+    };
+
+    const isButtonEnabled = selectedDate !== null && selectedTime !== null && selectedOption === "Pribadi";
 
     if (!doctor) {
-        // Render a custom 404 page if the doctor is not found
-        return (
-            <div className="p-4 max-w-lg mx-auto bg-gray-100 min-h-screen">
-                <h1 className="font-open-sans text-[24px] font-bold text-red-500">
-                    Doctor Not Found
-                </h1>
-                <p>The requested doctor with ID: <strong>{id}</strong> was not found.</p>
-                <button
-                    className="mt-4 p-2 bg-blue-500 text-white rounded"
-                    onClick={() => window.history.back()} // Use window.history.back() for backward navigation
-                >
-                    Go Back
-                </button>
-            </div>
-        );
+        return null;
     }
 
     return (
-        <div className="p-4 max-w-lg mx-auto bg-gray-100 min-h-screen">
-            <button
-                className="mb-4 p-2 bg-blue-500 text-white rounded"
-                onClick={() => window.history.back()} // Use window.history.back() for backward navigation
-            >
-                Back
-            </button>
-
-            <h1 className="font-open-sans text-[24px] font-bold text-[#0D1F3E]">
-                {`${doctor.name} - ${doctor.specialization}`}
-            </h1>
-
-            <div className="mt-4">
-                <h2 className="text-lg font-semibold">Availability:</h2>
-                <ul>
-                    {doctor.availability ? (
-                        Object.entries(doctor.availability).map(([day, time]) => (
-                            <li key={day}>
-                                {day.charAt(0).toUpperCase() + day.slice(1)}: {time}
-                            </li>
-                        ))
-                    ) : (
-                        <li>No availability information available.</li>
-                    )}
-                </ul>
+        <div className="flex flex-col min-h-screen pb-[68px]">
+            <Header />
+            <DoctorProfile doctor={doctor} />
+            <div className='flex-grow h-auto min-h-[542px] bg-[#F8F8FF] shadow-sm'>
+                <div className='flex h-auto pt-[24px] pr-[16px] pb-[24px] pl-[16px]'>
+                    <div className='w-[328px]'>
+                        <h3 className="font-open-sans text-left text-[12px] font-bold leading-[16px] tracking-[0.2px] text-[#3B4963] mb-2">
+                            Penjamin
+                        </h3>
+                        <div className="h-[54px] bg-white rounded-lg shadow-[0_0_20px_0_rgba(50,50,219,0.15)] flex flex-row items-center px-4 space-x-6">
+                            <div
+                                onClick={() => handleOptionSelect("Pribadi")}
+                                className={`flex flex-row items-center space-x-2 cursor-pointer p-[8px] rounded`}
+                            >
+                                <div className="relative">
+                                    <Image src="/circle.svg" alt="circle" width={16} height={16} />
+                                    {selectedOption === "Pribadi" && (
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-[8px] h-[8px] bg-[#0D0DCD] rounded-full"></div>
+                                        </div>
+                                    )}
+                                </div>
+                                <p className={`font-open-sans text-left text-[14px] font-normal leading-[22px] text-[#191F2A]`}>
+                                    Pribadi
+                                </p>
+                            </div>
+                            <div
+                                className={`flex flex-row items-center space-x-2 cursor-not-allowed p-[8px] rounded opacity-50`}
+                            >
+                                <Image src="/circle.svg" alt="circle" width={16} height={16} />
+                                <p className="font-open-sans text-left text-[14px] font-normal leading-[22px] text-[#191F2A]">
+                                    Asuransi
+                                </p>
+                            </div>
+                        </div>
+                        <div className='w-[328px] h-[284px] mt-[24px]'>
+                            <PilihJadwal />
+                            <CalenderPas availability={doctor.availability} onDateSelect={setSelectedDate} />
+                        </div>
+                        {selectedDate && (
+                            <div className='h-auto mt-[24px]'>
+                                <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
+                                    Pilih Waktu
+                                </h3>
+                                <div className='h-auto bg-white mt-[12px] p-[16px] rounded-[8px] shadow-[0_0_20px_0_rgba(50,50,219,0.15)]'>
+                                    {timeSlots.length > 0 ? (
+                                        <div className='grid grid-cols-3 gap-[16px]'>
+                                            {timeSlots.map((slot, index) => (
+                                                <div
+                                                    key={index}
+                                                    onClick={() => handleTimeSlotClick(slot)}
+                                                    className={`w-[90px] h-[24px] p-[4px_8px] rounded-[40px] border border-[#3AB790] cursor-pointer transition duration-200 ${selectedTime === slot ? 'bg-[#3AB790] text-white' : 'text-[#3AB790]'
+                                                        } hover:bg-[#3AB790] hover:text-white`}
+                                                >
+                                                    <h3 className="font-open-sans text-[12px] font-extrabold leading-[16px] tracking-[0.2px] text-center">
+                                                        {slot}
+                                                    </h3>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="font-open-sans text-center text-[14px] text-[#8193B4]">No available slots</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className='h-[96px] pt-[20px] pb-[30px] pl-[20px] pr-[20px] justify-center items-center bg-white'>
+                    <button
+                        onClick={handleContinue}
+                        disabled={!isButtonEnabled}
+                        className={`w-[320px] h-[46px] p-[12px_16px] rounded-[12px] border font-open-sans font-semibold text-[14px] ${isButtonEnabled
+                                ? 'bg-[#0D0DCD] text-white border-[#0D0DCD] cursor-pointer'
+                                : 'bg-[#F1F4FA] text-[#8193B4] border-[#8193B4] cursor-not-allowed'
+                            }`}
+                    >
+                        Lanjutkan
+                    </button>
+                </div>
             </div>
         </div>
     );

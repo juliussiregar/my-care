@@ -1,15 +1,16 @@
+// app/provider/ReduxProvider.tsx
+
 "use client";
 
-import { SessionProvider } from "next-auth/react";
-import React from "react";
+import { Provider } from "react-redux";
+import { store } from "@/app/store";
 
-interface ClientProviderProps {
-  children: React.ReactNode;
+interface ReduxProviderProps {
+    children: React.ReactNode;
 }
 
-// Define the ClientProvider component
-const ClientProvider: React.FC<ClientProviderProps> = ({ children }) => {
-  return <SessionProvider>{children}</SessionProvider>;
+const ReduxProvider: React.FC<ReduxProviderProps> = ({ children }) => {
+    return <Provider store={store}>{children}</Provider>;
 };
 
-export default ClientProvider;
+export default ReduxProvider;
