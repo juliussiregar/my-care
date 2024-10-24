@@ -1,9 +1,9 @@
 "use client"
-import { fetchDoctors } from '@/pages/api/doctor';
 import { Doctor } from '@/types/doctor';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { fetchDoctors } from '../../../../pages/api/doctor';
 
 const DoctorCard = () => {
     const [doctors, setDoctors] = useState<Doctor[]>([]);

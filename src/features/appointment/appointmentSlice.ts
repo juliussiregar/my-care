@@ -3,12 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AppointmentState {
     doctor_name: string | null;
-    doctor_specialization: string | null
+    doctor_specialization: string | null;
     doctor_id: string | null;
     hospital_id: number;
     appointment_date: string | null;
     appointment_time: string | null;
     type: string | null;
+    symtomps: string | null;
 }
 
 const initialState: AppointmentState = {
@@ -19,6 +20,7 @@ const initialState: AppointmentState = {
     appointment_date: null,
     appointment_time: null,
     type: null,
+    symtomps: null,
 };
 
 const appointmentSlice = createSlice({
@@ -26,26 +28,31 @@ const appointmentSlice = createSlice({
     initialState,
     reducers: {
         setAppointmentData: (state, action: PayloadAction<AppointmentState>) => {
-            state.doctor_name = action.payload.doctor_name
-            state.doctor_specialization = action.payload.doctor_specialization
+            state.doctor_name = action.payload.doctor_name;
+            state.doctor_specialization = action.payload.doctor_specialization;
             state.doctor_id = action.payload.doctor_id;
             state.hospital_id = action.payload.hospital_id;
             state.appointment_date = action.payload.appointment_date;
             state.appointment_time = action.payload.appointment_time;
             state.type = action.payload.type;
+            state.symtomps = action.payload.symtomps;
+        },
+        setSymptomps: (state, action: PayloadAction<string>) => {
+            state.symtomps = action.payload;
         },
         clearAppointmentData: (state) => {
             state.doctor_name = null;
-            state.doctor_specialization =null
+            state.doctor_specialization = null;
             state.doctor_id = null;
             state.hospital_id = 1;
             state.appointment_date = null;
             state.appointment_time = null;
             state.type = null;
+            state.symtomps = null;
         },
     },
 });
 
-export const { setAppointmentData, clearAppointmentData } = appointmentSlice.actions;
+export const { setAppointmentData, setSymptomps, clearAppointmentData } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;
