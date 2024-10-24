@@ -2,76 +2,71 @@
 
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { RootState } from '@/app/store';
 import Header from '@/app/(pasien)/_components/Header';
+import DoctorInfo from './_components/DoctorInfo';
+import ContactInfo from './_components/ContactInfo';
+import PatientInfo from './_components/PatientInfo';
+import ComplaintSection from './_components/ComplainSection';
 import Image from 'next/image';
-import { useSession } from 'next-auth/react';
-
 
 const Details = () => {
-    const { data: session } = useSession();
+    const router = useRouter(); // Initialize useRouter
     const appointmentData = useSelector((state: RootState) => state.appointment);
+    const [isOn, setIsOn] = useState(true);
 
     if (!appointmentData || !appointmentData.doctor_id) {
         return <div>No appointment data found.</div>;
     }
 
-    const { doctor_id, hospital_id, appointment_date, appointment_time, type, doctor_name, doctor_specialization } = appointmentData;
+    const { appointment_date, appointment_time, doctor_name, doctor_specialization, symtomps } = appointmentData;
+
+    const handleContinue = () => {
+        router.push('Details/Confirm');
+    };
 
     return (
         <div className="flex flex-col min-h-screen pb-[68px]">
             <Header />
-            <div className='flex flex-row h-[112px] pt-[32px] pr-[16px] pb-[24px] pl-[16px] border-t border-b border-[#F0F0FC] shadow-[0_0_20px_0_#3232DB26]'>
-                <div className='w-[160px] h-[56px] space-y-1'>
-                    <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
-                        {doctor_name}
+            <DoctorInfo
+                doctor_name={doctor_name ?? 'Unknown Doctor'}
+                doctor_specialization={doctor_specialization ?? 'Unknown Specialization'}
+                appointment_date={appointment_date}
+                appointment_time={appointment_time}
+            />
+            <div className='h-[324px] bg-[#F8F8FF] pt-[24px] pr-[16px] pb-[24px] pl-[16px] space-y-[24px]'>
+                <ContactInfo />
+                <PatientInfo isOn={isOn} setIsOn={setIsOn} />
+            </div>
+            <ComplaintSection initialSymptomps={symtomps} />
+            <div className='h-[8px] bg-[#F8F8FF]'></div>
+            <div className='h-[168px] py-[24px] px-[16px] space-y-[8px]'>
+                <div className='flex flex-row py-[16px] border-b border-[#D7D7F8] justify-between'>
+                    <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-left text-[#3B4963]">
+                        Biaya Booking
                     </h3>
-                    <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
-                        {doctor_specialization}
+                    <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-right text-[#3AB790]">
+                        Rp 50.000
                     </h3>
-                    <div className='flex flex-row items-center space-x-1'>
-                        <Image src="/suitcase.svg" alt='suitcase' width={16} height={16} />
-                        <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-[#3B4963] ">
-                            RS Immanuel
-                        </h3>
-                    </div>
                 </div>
-                <div className='w-[160px] h-[56px] space-y-1'>
-                    <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
-                        Jadwal
+                <div className='flex flex-row items-start h-[64px] space-x-[8px]'>
+                    <Image src="/warning2.svg" alt='warning2' width={16} height={16} />
+                    <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-justify text-[#6278A1]">
+                        Untuk mengamankan jadwal konsultasi, diperlukan pembayaran sebesar Rp50.000 sebagai biaya booking. Jumlah ini akan langsung dipotong dari total tagihan pasien saat perawatan.
                     </h3>
-                    <div className='flex flex-row space-x-1'>
-                        <Image src="/tanggal.svg" alt='tanggal' width={16} height={16} />
-                        <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
-                            {appointment_date
-                                ? new Date(appointment_date).toLocaleDateString('id-ID', {
-                                    day: '2-digit',
-                                    month: 'long',
-                                    year: 'numeric',
-                                })
-                                : 'Tanggal tidak tersedia'}
-                        </h3>
-                    </div>
-                    <div className='flex flex-row space-x-1'>
-                        <Image src="/clock.svg" alt='tanggal' width={16} height={16} />
-                        <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
-                            {appointment_time ? appointment_time.slice(0, 5).replace('.', ':') : ''}
-                        </h3>
-                    </div>
-
                 </div>
             </div>
-
-            <p>test</p>
-            <h2>Appointment Details</h2>
-            <p><strong>USER ID:</strong> {session?.user.id}</p>
-            <p><strong>Doctor ID:</strong> {doctor_id}</p>
-            <p><strong>Hospital ID:</strong> {hospital_id}</p>
-            <p><strong>Appointment Date:</strong> {appointment_date}</p>
-            <p><strong>Appointment Time:</strong> {appointment_time}</p>
-            <p><strong>Type:</strong> {type}</p>
+            <div className="flex justify-center items-center mt-[24px]">
+                <button
+                    onClick={handleContinue} // Add onClick handler to navigate
+                    className='text-white border-[#0D0DCD] bg-[#0D0DCD] cursor-pointer w-[320px] h-[46px] p-[12px_16px] rounded-[12px] border font-open-sans font-semibold text-[14px]'
+                >
+                    Lanjutkan
+                </button>
+            </div>
         </div>
     );
 };

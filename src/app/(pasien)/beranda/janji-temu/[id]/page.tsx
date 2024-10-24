@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 // src/app/(pasien)/beranda/janji-temu/[id]/page.tsx
 
 "use client";
@@ -8,11 +10,11 @@ import { setAppointmentData } from '@/features/appointment/appointmentSlice';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Doctor } from '@/types/doctor';
-import { fetchDoctorById } from '@/pages/api/doctor';
 import Header from '@/app/(pasien)/_components/Header';
 import DoctorProfile from './_components/DoctorProfile';
 import PilihJadwal from './_components/PilihJadwal';
 import CalenderPas from './_components/CalenderPas';
+import { fetchDoctorById } from '../../../../../../pages/api/doctor';
 
 export default function Appointment() {
     const router = useRouter();
@@ -56,7 +58,7 @@ export default function Appointment() {
             const endTime = new Date(`1970-01-01T${convertTo24Hour(end)}`);
             const slots = [];
 
-            let currentTime = startTime;
+            const currentTime = startTime;
             while (currentTime < endTime) {
                 slots.push(currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
                 currentTime.setHours(currentTime.getHours() + 1);
@@ -68,7 +70,7 @@ export default function Appointment() {
     };
 
     const convertTo24Hour = (time: string) => {
-        const [hours, minutes, period] = time.match(/(\d+):(\d+) (\w+)/)?.slice(1) || [];
+        const [hours, minutes, period] = RegExp(/(\d+):(\d+) (\w+)/).exec(time)?.slice(1) || [];
         let hour = parseInt(hours, 10);
         if (period.toLowerCase() === 'pm' && hour < 12) hour += 12;
         if (period.toLowerCase() === 'am' && hour === 12) hour = 0;
@@ -101,6 +103,7 @@ export default function Appointment() {
             appointment_date: appointmentDate,
             appointment_time: appointmentTime,
             type: selectedOption,
+            symtomps: null
         }));
 
         // Navigate to the next page

@@ -6,10 +6,7 @@ const nextConfig = {
                 source: `/api/:path*`,
                 destination: `/api/:path*`,
             },
-            {
-                source: `/api/:path*`,
-                destination: `http://157.245.52.172:5000/:path*`, 
-            },
+          
         ];
     },
     async headers() {
@@ -19,7 +16,7 @@ const nextConfig = {
                 headers: [
                     {
                         key: "Access-Control-Allow-Origin",
-                        value: "*", // Mengizinkan semua origin
+                        value: "*", 
                     },
                     {
                         key: "Access-Control-Allow-Methods",
