@@ -1,8 +1,11 @@
+// ScheduleDetail.tsx
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import { formatDate } from "@/utils/date";
 import Calendar from "../../home/_components/Calendar";
+import { useRouter } from "next/navigation";
+import PinModal from "../../medical-record/[ids]/detail/[id]/_components/PinModal";
 
 interface PatientData {
     id: string;
@@ -25,33 +28,63 @@ interface ScheduleDetailProps {
 }
 
 const PatientItem: React.FC<PatientData & { className?: string }> = ({
+    id,
     patientName,
     type,
     className,
 }) => {
+    const router = useRouter();
+    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+
+    const handlePatientClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsPinModalOpen(true);
+    };
+
+    const handlePinSubmit = (pin: string[]) => {
+        const enteredPin = pin.join("");
+        // Replace with actual pin validation
+        if (enteredPin === "123456") {
+            setIsPinModalOpen(false);
+            // Navigate to the specific medical record detail page using the patient's ID
+            router.push(`/medical-record/${id}`);
+        } else {
+            alert("Invalid PIN");
+        }
+    };
+
     return (
-        <div
-            className={`flex items-center justify-between w-[260px] h-[58px] border border-[#F0F0FC] p-3 rounded ${className}`}
-        >
-            <div className="flex items-center">
+        <>
+            <div
+                className={`flex items-center justify-between w-[260px] h-[58px] border border-[#F0F0FC] p-3 rounded ${className} cursor-pointer`}
+                onClick={handlePatientClick}
+            >
+                <div className="flex items-center">
+                    <Image
+                        src="/outpatient.svg"
+                        alt="outpatient"
+                        width={20}
+                        height={20}
+                    />
+                    <div className="font-open-sans ml-2">
+                        <h3 className="text-[10px]">{type}</h3>
+                        <h3 className="text-xs font-bold">{patientName}</h3>
+                    </div>
+                </div>
                 <Image
-                    src="/outpatient.svg"
-                    alt="outpatient"
+                    src="/icon-right.svg"
+                    alt="icon-right"
                     width={20}
                     height={20}
                 />
-                <div className="font-open-sans ml-2">
-                    <h3 className="text-[10px]">{type}</h3>
-                    <h3 className="text-xs font-bold">{patientName}</h3>
-                </div>
             </div>
-            <Image
-                src="/icon-right.svg"
-                alt="icon-right"
-                width={20}
-                height={20}
+
+            <PinModal
+                isOpen={isPinModalOpen}
+                onClose={() => setIsPinModalOpen(false)}
+                onSubmit={handlePinSubmit}
             />
-        </div>
+        </>
     );
 };
 
@@ -99,14 +132,23 @@ const ScheduleDetail: React.FC<ScheduleDetailProps> = ({
 }) => {
     const [showCalendar, setShowCalendar] = useState(false);
 
+    // Updated timeSlots with unique IDs for each patient
     const timeSlots: TimeSlotData[] = [
         {
             id: "slot1",
             time: "08:30",
             duration: "1hr",
             patients: [
-                { id: "p1", patientName: "Faisal Kemal", type: "Outpatient" },
-                { id: "p2", patientName: "Junaedi", type: "Outpatient" },
+                {
+                    id: "patient_001",
+                    patientName: "Faisal Kemal",
+                    type: "Outpatient",
+                },
+                {
+                    id: "patient_002",
+                    patientName: "Junaedi",
+                    type: "Outpatient",
+                },
             ],
         },
         {
@@ -114,8 +156,16 @@ const ScheduleDetail: React.FC<ScheduleDetailProps> = ({
             time: "09:30",
             duration: "1hr",
             patients: [
-                { id: "p3", patientName: "Dian Yuanda", type: "Outpatient" },
-                { id: "p4", patientName: "Christian", type: "Outpatient" },
+                {
+                    id: "patient_003",
+                    patientName: "Dian Yuanda",
+                    type: "Outpatient",
+                },
+                {
+                    id: "patient_004",
+                    patientName: "Christian",
+                    type: "Outpatient",
+                },
             ],
         },
         {
@@ -123,8 +173,16 @@ const ScheduleDetail: React.FC<ScheduleDetailProps> = ({
             time: "10:30",
             duration: "1hr",
             patients: [
-                { id: "p5", patientName: "Alice Smith", type: "Outpatient" },
-                { id: "p6", patientName: "Bob Wilson", type: "Outpatient" },
+                {
+                    id: "patient_005",
+                    patientName: "Alice Smith",
+                    type: "Outpatient",
+                },
+                {
+                    id: "patient_006",
+                    patientName: "Bob Wilson",
+                    type: "Outpatient",
+                },
             ],
         },
     ];
