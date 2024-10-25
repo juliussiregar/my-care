@@ -37,24 +37,63 @@ export async function middleware(req: NextRequest) {
     // For all other paths if the token exists, role-based protection
     if (token) {
         const userRole = token.role;
-        // Redirect logic for role-specific pages can remain here
+        const url = req.nextUrl.clone();
+
+        // Doctor-only routes
+        const doctorOnlyRoutes = ["/schedule", "/medical-record"];
+        if (doctorOnlyRoutes.some(route => pathname.startsWith(route)) && userRole !== "doctor") {
+            if (userRole === "patient") {
+                url.pathname = "/beranda";
+            } else {
+                url.pathname = "/auth/login";
+            }
+            return NextResponse.redirect(url);
+        }
+
+        // Patient-only routes
+        const patientOnlyRoutes = ["/riwayat", "/pasien", "/akun"];
+        if (patientOnlyRoutes.some(route => pathname.startsWith(route)) && userRole !== "patient") {
+            if (userRole === "doctor") {
+                url.pathname = "/home";
+            } else {
+                url.pathname = "/auth/login";
+            }
+            return NextResponse.redirect(url);
+        }
+
+        // Existing role-based redirects
         if (userRole === "doctor" && pathname.startsWith("/beranda")) {
-            const url = req.nextUrl.clone();
-            url.pathname = "/home"; // Redirect doctors from /beranda to /home
+            url.pathname = "/home";
             return NextResponse.redirect(url);
         }
 
         if (userRole === "patient" && pathname.startsWith("/home")) {
-            const url = req.nextUrl.clone();
-            url.pathname = "/beranda"; // Redirect patients from /home to /beranda
+            url.pathname = "/beranda";
             return NextResponse.redirect(url);
         }
     }
+
     // Continue with the request
     return NextResponse.next();
 }
 
 // Route configuration for the middleware
 export const config = {
-    matcher: ["/auth/login", "/home", "/beranda", "/akun"], // Ensure all these routes are checked
+    matcher: [
+        "/auth/login", 
+        "/home", 
+        "/beranda", 
+        "/akun",
+        "/akun/:path*",
+        "/schedule",
+        "/schedule/:path*",
+        "/riwayat",
+        "/riwayat/:path*",
+        "/medical-record",
+        "/medical-record/:path*",
+        "/pasien",
+        "/pasien/:path*",
+        "/akun",
+        "/akun/:path*"
+    ],
 };

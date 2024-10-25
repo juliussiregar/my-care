@@ -20,6 +20,10 @@ const config: Config = {
       },
       fontFamily: {
         'open-sans': ['Open Sans', 'sans-serif'], // Adding Open Sans font
+        'inter': ['Inter', 'sans-serif'],
+      },
+      boxShadow: {
+        'custom': '0px 1px 0px 0px rgba(0, 0, 0, 0.1)',
       },
     },
   },

@@ -26,3 +26,15 @@ export const fetchDoctorById = async (doctorId: number) => {
         throw new Error('Failed to fetch doctor details');
     }
 };
+
+// Function to fetch doctor details by ID
+export const fetchDoctorSchedule = async (startDate?: Date, endDate?: Date) => {
+    try {
+        const response = await axios.get(`${baseUrl}/doctors/appointments?type=confirmed&start_date=${startDate}&end_date=${endDate}`); // Make a GET request with doctor_id
+        return response.data; // Return the data directly
+    } catch (error) {
+        // Handle error
+        console.error(`Failed to fetch doctor with ${startDate} and ${endDate}:`, error);
+        throw new Error('Failed to fetch doctor schedule');
+    }
+};
