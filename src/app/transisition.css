@@ -11,6 +11,7 @@
     animation: slideIn 0.5s forwards;
   }
   
+  
   .transition-container.slide-out {
     animation: slideOut 0.5s forwards;
   }
