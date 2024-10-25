@@ -107,7 +107,7 @@ const LoginForm: React.FC = () => {
             <div className="relative z-10 bg-white rounded-t-2xl shadow-lg p-8 max-w-md w-full mx-auto flex flex-col justify-between min-h-[50vh] h-full mt-10 flex-grow">
                 <div>
                     <h2 className="text-center text-xl font-bold text-blue-800 mb-4">
-                        Halo Dokter! <br />
+                        Halo! <br />
                         Selamat datang di My Care
                     </h2>
                     <p className="text-center text-gray-500 mb-6">
