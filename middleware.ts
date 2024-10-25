@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
         } else if (userRole === "patient") {
             url.pathname = "/beranda"; // Redirect to /beranda if patient
         } else {
-            url.pathname = "/"; // 
+            url.pathname = "/"; 
         }
         return NextResponse.redirect(url);
     }

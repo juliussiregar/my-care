@@ -1,4 +1,3 @@
-// Schedule.tsx
 "use client";
 import React, { useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -13,7 +12,11 @@ interface AvailabilitySchedule {
 }
 
 const Schedule: React.FC = () => {
-    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date>(() => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return today;
+    });
     const { data: session } = useSession();
 
     const doctorId = 1;
@@ -24,16 +27,22 @@ const Schedule: React.FC = () => {
     );
 
     const hasAppointments = (date: Date) => {
-        const day = date.toLocaleDateString('id-ID', { weekday: 'long' }).toLowerCase();
-        return availableSchedule[day] !== undefined;
+        const adjustedDate = new Date(date);
+        adjustedDate.setHours(0, 0, 0, 0);
+        const dayName = adjustedDate.toLocaleDateString('id-ID', { weekday: 'long' }).toLowerCase();
+        return availableSchedule[dayName] !== undefined;
     };
 
     return (
-        <div className='flex flex-col min-h-screen pb-[68px]'>
+        <div className='flex flex-col min-h-screen'>
             <Header />
             <ScheduleHero />
             <ScheduleDay 
-                onDateSelect={setSelectedDate}
+                onDateSelect={(date) => {
+                    const adjustedDate = new Date(date);
+                    adjustedDate.setHours(0, 0, 0, 0);
+                    setSelectedDate(adjustedDate);
+                }}
                 doctorId={doctorId}
                 availability={availableSchedule}
                 selectedDate={selectedDate}
@@ -41,7 +50,6 @@ const Schedule: React.FC = () => {
             <ScheduleDetail 
                 selectedDate={selectedDate}
                 hasAppointments={hasAppointments(selectedDate)}
-                doctorSchedule={availableSchedule} 
             />
             <Footer />
         </div>
