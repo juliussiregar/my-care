@@ -59,3 +59,22 @@ export const fetchDoctorSchedule = async (): Promise<Appointment[]> => {
         throw new Error('Failed to fetch doctor schedule');
     }
 };
+
+// Function to fetch appointments within a date range
+export const fetchAppointments = async (startDate: string, endDate: string, token: string) => {
+    try {
+        const response = await axios.get(`${baseUrl}/doctors/appointments?start_date=${startDate}&end_date=${endDate}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Add the Authorization header
+            },
+        });
+
+        console.log("Fetched appointments response:", response.data); // Log the response JSON
+
+        return response.data; // Return the fetched appointments
+    } catch (error) {
+        // Handle error
+        console.error(`Failed to fetch appointments from ${startDate} to ${endDate}:`, error);
+        throw new Error("Failed to fetch appointments");
+    }
+};

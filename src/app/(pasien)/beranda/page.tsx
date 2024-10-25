@@ -11,7 +11,7 @@ import Header1 from "../_components/Header1";
 
 const Beranda: React.FC = () => {
     return (
-        <div className="flex flex-col min-h-screen pb-[68px]">
+        <div className="flex flex-col min-h">
             <Header1/>
             <ActionButtons />
             <LoyaltyPoints />

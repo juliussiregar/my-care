@@ -1,7 +1,8 @@
-// ScheduleDay.tsx
 "use client";
-import { getDayName } from '@/utils/date';
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Calendar from '../../home/_components/Calendar';
+import DayItem from './DayItem';
 
 interface DayItemProps {
     day: string;
@@ -15,93 +16,129 @@ interface ScheduleDayProps {
     onDateSelect: (date: Date, isPracticeDay: boolean) => void;
     doctorId: number;
     availability: Record<string, string>;
-    selectedDate: Date; // Tambah prop ini
+    selectedDate: Date;
 }
 
 const ScheduleDay: React.FC<ScheduleDayProps> = ({ 
     onDateSelect, 
     availability,
-    selectedDate: parentSelectedDate // Rename untuk menghindari konflik
+    selectedDate: parentSelectedDate
 }) => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(parentSelectedDate);
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [startDate, setStartDate] = useState(new Date());
 
-    // Effect untuk update internal state ketika parent date berubah
     useEffect(() => {
         setSelectedDate(parentSelectedDate);
     }, [parentSelectedDate]);
 
-    const getDaysArray = () => {
+    const getDaysArray = (startDate: Date) => {
         const days = [];
-        const today = new Date();
+        const date = new Date(startDate);
 
         for (let i = 0; i < 7; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-            const dayName = getDayName(date).toLowerCase();
-            
+            const dayName = date.toLocaleDateString('id-ID', { weekday: 'long' }).toLowerCase();
             const isPracticeDay = availability[dayName] !== undefined;
 
             days.push({
                 date: date.getDate(),
-                day: getDayName(date).slice(0, 3),
-                fullDate: date,
+                day: dayName.slice(0, 3),
+                fullDate: new Date(date),
                 isPracticeDay,
             });
+            date.setDate(date.getDate() + 1);
         }
         return days;
     };
 
     const handleDateClick = (date: Date, isPracticeDay: boolean) => {
-        setSelectedDate(date);
-        onDateSelect(date, isPracticeDay);
+        const adjustedDate = new Date(date);
+        adjustedDate.setHours(0, 0, 0, 0);
+        setSelectedDate(adjustedDate);
+        onDateSelect(adjustedDate, isPracticeDay);
+    };
+
+    const handleDateSelect = (date: Date) => {
+        const adjustedDate = new Date(date);
+        adjustedDate.setHours(0, 0, 0, 0);
+        setSelectedDate(adjustedDate);
+        setStartDate(adjustedDate);
+        setShowCalendar(false);
+        const dayName = adjustedDate.toLocaleDateString("id-ID", { weekday: "long" }).toLowerCase();
+        onDateSelect(adjustedDate, availability?.[dayName] !== undefined);
+    };
+
+    const getHeaderLabel = (): string => {
+        const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+
+        if (selectedDate.toDateString() === today.toDateString()) {
+            return "Hari Ini";
+        } else if (selectedDate.toDateString() === tomorrow.toDateString()) {
+            return "Besok";
+        } else {
+            return "";
+        }
     };
 
     return (
-        <div className="relative w-[360px] h-[108px] p-[20px] bg-white flex flex-col gap-[4px]">
-            <div className="flex justify-between gap-[6px]">
-                {getDaysArray().map((day, index) => (
+        <div className="relative w-full bg-white flex flex-col gap-[4px]">
+            {/* Schedule Days */}
+            <div className="w-full flex justify-between gap-[6px] p-4">
+                {getDaysArray(startDate).map((day, index) => (
                     <DayItem
                         key={index}
                         day={day.day}
                         date={day.date}
-                        isActive={selectedDate.getDate() === day.date && selectedDate.getMonth() === day.fullDate.getMonth()}
+                        isActive={selectedDate.toDateString() === day.fullDate.toDateString()}
                         isPracticeDay={day.isPracticeDay}
                         onClick={() => handleDateClick(day.fullDate, day.isPracticeDay)}
                     />
                 ))}
             </div>
-            <div className="flex justify-between gap-[6px] mt-1">
-                {getDaysArray().map((day, index) => (
-                    <div key={index} className="w-[44px] flex justify-center">
-                        <Indicator isActive={day.isPracticeDay} />
-                    </div>
-                ))}
+
+            {/* Header Label and Calendar Toggle */}
+            <div className="flex items-center space-x-2 w-full text-xs h-[34px] bg-[#F0F0FC] p-4 mt-2">
+                <div className="flex items-center">
+                    <h3 className="font-open-sans text-[#4E6082]">
+                        {getHeaderLabel()}
+                    </h3>
+                    {getHeaderLabel() !== "" && (
+                        <div className="bg-[#6278A1] rounded-full w-1 h-1 ml-2"></div>
+                    )}
+                </div>
+                <div
+                    className="flex items-center cursor-pointer"
+                    onClick={() => setShowCalendar(!showCalendar)}
+                >
+                    <h3 className="font-open-sans text-[#4E6082] font-bold">
+                        {selectedDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}
+                    </h3>
+                    <Image
+                        src="/down.svg"
+                        alt="down"
+                        width={11.25}
+                        height={6.75}
+                        className={`ml-2 transform transition-transform ${showCalendar ? "rotate-180" : ""}`}
+                    />
+                </div>
             </div>
+
+            {/* Calendar */}
+            {showCalendar && (
+                <div className="w-full">
+                    <Calendar
+                        year={selectedDate.getFullYear()}
+                        month={selectedDate.getMonth()}
+                        onDateSelect={handleDateSelect}
+                        doctorSchedule={availability}
+                        onClose={() => setShowCalendar(false)}
+                    />
+                </div>
+            )}
         </div>
     );
 };
-
-// DayItem dan Indicator components tetap sama
-const DayItem: React.FC<DayItemProps> = ({ day, date, isActive, onClick }) => {
-    return (
-        <div 
-            className={`flex flex-col items-center justify-center text-center w-[44px] h-[56px] border 
-                ${isActive ? 'bg-[#050577] border-[#050577]' : 'bg-white border-[#D7D7F8]'} 
-                rounded-md cursor-pointer hover:border-[#050577]`}
-            onClick={onClick}
-        >
-            <span className={`font-bold text-[12px] ${isActive ? 'text-white' : 'text-[#333333]'}`}>
-                {day}
-            </span>
-            <span className={`text-[14px] font-bold ${isActive ? 'text-white' : 'text-[#333333]'}`}>
-                {date}
-            </span>
-        </div>
-    );
-};
-
-const Indicator: React.FC<{ isActive: boolean }> = ({ isActive }) => (
-    <div className={`${isActive ? "w-[6px] h-[6px] bg-green-500 rounded-full" : "w-0 h-0"}`} />
-);
 
 export default ScheduleDay;
