@@ -2,14 +2,12 @@
 
 import Image from 'next/image';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 interface NextPageProps {
     onBackClick: () => void;
 }
 
 const NextPage: React.FC<NextPageProps> = ({ onBackClick }) => {
-    const router = useRouter();
     const [isSliding, setIsSliding] = useState(false);
 
     const handleNextClick = () => {
