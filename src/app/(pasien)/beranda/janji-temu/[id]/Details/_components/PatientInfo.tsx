@@ -1,11 +1,10 @@
 // src/app/(pasien)/_components/Details/PatientInfo.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import ToggleSwitch from '@/app/components/ToogleSwitch';
 import { useSession } from 'next-auth/react';
-
-
+import PatientDrawer from './PatientDrawer';
 
 interface PatientInfoProps {
     isOn: boolean;
@@ -14,6 +13,10 @@ interface PatientInfoProps {
 
 const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
     const { data: session } = useSession();
+    const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+
+    const openDrawer = () => setIsDrawerVisible(true);
+    const closeDrawer = () => setIsDrawerVisible(false);
 
     return (
         <div className='h-[136px] space-y-[12px]'>
@@ -48,13 +51,19 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
                         </>
                     ) : (
                         <>
-                            <div className='w-[203px] h-[32px] space-x-[4px] flex flex-row items-start'>
+                            <div
+                                className='w-[203px] h-[32px] space-x-[4px] flex flex-row items-start cursor-pointer'
+                                onClick={openDrawer}
+                            >
                                 <Image src="/warning.svg" alt='warning' width={16} height={16} />
                                 <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-[#DD403A] text-left">
                                     Isi Data Pasien yang ingin didaftarkan
                                 </h3>
                             </div>
-                            <div className='flex flex-row w-[81px] h-[24px] py-[2px] px-[8px] space-x-1'>
+                            <div
+                                className='flex flex-row w-[81px] h-[24px] py-[2px] px-[8px] space-x-1 cursor-pointer'
+                                onClick={openDrawer}
+                            >
                                 <p className="font-open-sans text-[12px] font-semibold leading-[20px] text-center text-[#0D0DCD]">
                                     Isi data
                                 </p>
@@ -64,6 +73,7 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
                     )}
                 </div>
             </div>
+            <PatientDrawer isVisible={isDrawerVisible} onClose={closeDrawer} />
         </div>
     );
 };

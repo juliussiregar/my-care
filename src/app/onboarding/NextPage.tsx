@@ -17,8 +17,8 @@ const NextPage: React.FC<NextPageProps> = ({ onBackClick }) => {
 
         // Tunggu sampai animasi selesai, lalu navigasikan ke halaman berikutnya
         setTimeout(() => {
-            router.push('onboarding/location');
-        }, 500); // Durasi animasi slide harus sesuai dengan animasi CSS (0.5s)
+            window.location.href = '/onboarding/location';
+        }, 500); // Animation duration should match the CSS animation (0.5s)
     };
 
     return (
