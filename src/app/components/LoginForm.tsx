@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
-import Link from "next/link";
 
 // Form schema for validation
 const formSchema = z.object({

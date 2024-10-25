@@ -2,16 +2,14 @@
 import React, { useState } from 'react'
 import HeaderPayment from './_components/HeaderPayment'
 import Method from './_components/Method'
-import Bca from './_components/bca' 
 import { useSession } from 'next-auth/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/app/store';
-import { useRouter } from 'next/navigation'
+import Bca from './_components/bca';
 
 
 const Payment = () => {
     const [selectedMethod, setSelectedMethod] = useState<string | null>(null); 
-    const router = useRouter();
     const { data: session } = useSession(); 
     const appointmentData = useSelector((state: RootState) => state.appointment); 
     console.log(`session ada: ${session?.user.patient_name}`);
