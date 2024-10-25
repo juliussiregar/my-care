@@ -43,7 +43,7 @@ const Location: React.FC = () => {
 
   const handleConfirmClick = () => {
     // Navigasi ke halaman /home setelah menunjukkan loading
-    router.push('/beranda');
+    router.push('/auth/login');
   };
 
   const toggleList = () => {
