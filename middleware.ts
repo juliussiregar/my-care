@@ -51,15 +51,15 @@ export async function middleware(req: NextRequest) {
         }
 
         // Patient-only routes
-        const patientOnlyRoutes = ["/riwayat", "/pasien", "/akun"];
-        if (patientOnlyRoutes.some(route => pathname.startsWith(route)) && userRole !== "patient") {
-            if (userRole === "doctor") {
-                url.pathname = "/home";
-            } else {
-                url.pathname = "/auth/login";
-            }
-            return NextResponse.redirect(url);
-        }
+        // const patientOnlyRoutes = ["/riwayat", "/pasien", "/akun"];
+        // if (patientOnlyRoutes.some(route => pathname.startsWith(route)) && userRole !== "patient") {
+        //     if (userRole === "doctor") {
+        //         url.pathname = "/home";
+        //     } else {
+        //         url.pathname = "/auth/login";
+        //     }
+        //     return NextResponse.redirect(url);
+        // }
 
         // Existing role-based redirects
         if (userRole === "doctor" && pathname.startsWith("/beranda")) {
