@@ -56,7 +56,7 @@ const MenuMedical: React.FC = () => {
 
     const medicalData: MedicalData = {
         lab: {
-            jenisPemeriksaan: "drg. Annisa Melinda",
+            jenisPemeriksaan: "Dr. Romi",
             tanggalSampel: "20 September 2024",
             dokterPengirim: "dr. Emira",
             keterangan:
@@ -90,7 +90,7 @@ const MenuMedical: React.FC = () => {
             buttonText: "Lihat Resep",
         },
         radiologi: {
-            jenisPemeriksaan: "drg. Annisa Melinda",
+            jenisPemeriksaan: "Dr. Romi",
             tanggalSampel: "20 September 2024",
             radiolog: "dr. Emira",
             hasilPemeriksaan: [

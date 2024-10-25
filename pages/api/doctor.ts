@@ -1,5 +1,5 @@
-// app/pages/api/doctor.ts
 "use server"
+import { Appointment } from '@/types/appointment';
 import axios from 'axios'; // Import Axios
 
 const baseUrl = "http://157.245.52.172:5000";
@@ -27,26 +27,35 @@ export const fetchDoctorById = async (doctorId: number) => {
     }
 };
 
-// Function to fetch doctor schedule by filter
-export const fetchDoctorScheduleFilter = async (startDate?: Date, endDate?: Date) => {
+export const fetchDoctorScheduleFilter = async (startDate?: Date, endDate?: Date): Promise<Appointment[]> => {
     try {
-        const response = await axios.get(`${baseUrl}/doctors/appointments?type=confirmed&start_date=${startDate}&end_date=${endDate}`); // Make a GET request with doctor_id
-        return response.data; // Return the data directly
+        const formattedStartDate = startDate ? startDate.toISOString().split('T')[0] : '';
+        const formattedEndDate = endDate ? endDate.toISOString().split('T')[0] : '';
+        
+        const response = await axios.get(`${baseUrl}/doctors/appointments`, {
+            params: {
+                type: 'confirmed',
+                start_date: formattedStartDate,
+                end_date: formattedEndDate
+            }
+        });
+        
+        return response.data;
     } catch (error) {
-        // Handle error
-        console.error(`Failed to fetch doctor with ${startDate} and ${endDate}:`, error);
-        throw new Error('Failed to fetch doctor schedule');
+        console.error(`Failed to fetch doctor schedule with startDate: ${startDate} and endDate: ${endDate}.`, error);
+        throw new Error('Failed to fetch filtered doctor schedule');
     }
 };
 
-// Function to fetch doctor schedule
-export const fetchDoctorSchedule = async () => {
+export const fetchDoctorSchedule = async (): Promise<Appointment[]> => {
     try {
-        const response = await axios.get(`${baseUrl}/doctors/appointments?type=confirmed`); // Make a GET request with doctor_id
-        return response.data; // Return the data directly
+        const response = await axios.get(`${baseUrl}/doctors/appointments`, {
+            params: { type: 'confirmed' }
+        });
+        
+        return response.data;
     } catch (error) {
-        // Handle error
-        console.error(`Failed to fetch doctor schedule:`, error);
+        console.error(`Failed to fetch doctor schedule.`, error);
         throw new Error('Failed to fetch doctor schedule');
     }
 };

@@ -1,4 +1,3 @@
-// Schedule.tsx
 "use client";
 import React, { useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';

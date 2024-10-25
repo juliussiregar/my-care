@@ -33,9 +33,7 @@ const LoadingScreen: React.FC = () => {
                 </div>
                 <h1 className="text-2xl font-bold">MyCare</h1>
                 <p className="mt-4">Selamat datang,</p>
-                <h2 className="text-xl font-semibold mt-2">
-                    drg. Annisa Melinda
-                </h2>
+                <h2 className="text-xl font-semibold mt-2">Dr. Romi</h2>
                 <p className="mt-4">
                     Mengarahkan Anda ke Beranda...{" "}
                     <span className="text-lg font-bold">{countdown}</span>

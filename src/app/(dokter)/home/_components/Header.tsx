@@ -5,7 +5,6 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 
 const Header = () => {
-
     const handleLogout = () => {
         signOut({ callbackUrl: "/auth/login" });
     };
@@ -87,7 +86,7 @@ const Header = () => {
                             {/* Doctor Information */}
                             <div className="flex flex-col">
                                 <h2 className="font-open-sans text-[#FFFFFF] text-left text-[14px] font-bold leading-[22px]">
-                                    drg. Annisa Melinda
+                                    Dr. Romi
                                 </h2>
                                 <h3 className="font-open-sans mt-1 text-[#FFFFFF] text-left text-[12px] font-normal leading-[16px] tracking-[0.2px]">
                                     Kedokteran Gigi
