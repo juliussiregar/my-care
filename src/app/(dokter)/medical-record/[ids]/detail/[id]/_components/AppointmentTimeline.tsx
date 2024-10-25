@@ -64,7 +64,7 @@ const AppointmentTimeline = () => {
                 </div>
                 <h3 className="ml-6 font-bold">Upcoming appointment</h3>
                 <Link
-                    href={`/medical-record/detail/${upcomingAppointment.id}`}
+                    href={`/medical-record/${upcomingAppointment.id}/detail/${upcomingAppointment.id}/menu/1`}
                 >
                     <div className="ml-6 bg-white rounded-[10px] p-4 border border-[#D7D7F8] my-2 cursor-pointer">
                         <div className="flex items-center mb-2">
@@ -113,7 +113,7 @@ const AppointmentTimeline = () => {
                 </div>
                 {pastAppointments.map((appointment, index) => (
                     <Link
-                        href={`/medical-record/detail/${appointment.id}`}
+                        href={`/medical-record/${appointment.id}/detail/${appointment.id}/menu/1`}
                         key={index}
                     >
                         <div className="ml-6 bg-white rounded-[10px] p-4 border border-[#D7D7F8] my-4 cursor-pointer">
