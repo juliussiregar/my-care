@@ -5,8 +5,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Phonetop from "./components/phonetop";
 import TransitionLayout from "./TransitionLayout";
-import "./transitions.css";
-import ClientProviders from "./ClientProviders"; // Import the new ClientProviders component
+import ClientProviders from "./ClientProviders"; 
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
