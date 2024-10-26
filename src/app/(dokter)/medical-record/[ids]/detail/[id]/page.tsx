@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     description: "Detail medical record page",
 };
 
-const DetailMedicalRecord = ({ params }: { params: { id: string } }) => {
+const DetailMedicalRecord = ({ params }: { params: { ids: string; id: string } }) => {
     console.log("Params received:", params);
     return (
         <div className="min-h-screen">

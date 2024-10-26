@@ -100,7 +100,7 @@ const Header = () => {
 
                         {/* Menu Section */}
                         <div className="py-4">
-                            <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left">
+                            <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left pl-4">
                                 MENU
                             </h3>
                             <ul className="flex flex-col w-full px-4 py-[16px] gap-[12px]">

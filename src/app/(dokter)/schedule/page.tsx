@@ -19,10 +19,8 @@ const Schedule: React.FC = () => {
     });
     const { data: session } = useSession();
 
-    const doctorId = 1;
-
     const availableSchedule: AvailabilitySchedule = useMemo(() => 
-        session?.user?.availability_schedule || {},
+        session?.user?.availability_schedule ?? {},
         [session?.user?.availability_schedule]
     );
 
@@ -43,7 +41,6 @@ const Schedule: React.FC = () => {
                     adjustedDate.setHours(0, 0, 0, 0);
                     setSelectedDate(adjustedDate);
                 }}
-                doctorId={doctorId}
                 availability={availableSchedule}
                 selectedDate={selectedDate}
             />

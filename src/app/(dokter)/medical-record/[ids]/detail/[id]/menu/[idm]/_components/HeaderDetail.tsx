@@ -21,7 +21,7 @@ const HeaderDetail = () => {
             </Link>
             <div className="flex-row">
                 <h2 className="font-bold ml-4">Detail Rekam Medis</h2>
-                <h3 className="text-xs ml-4 mb-[9px]">{id}</h3>
+                <h3 className="text-xs ml-4 mb-[9px]">12345678</h3>
             </div>
         </div>
     );

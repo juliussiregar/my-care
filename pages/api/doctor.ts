@@ -47,9 +47,12 @@ export const fetchDoctorScheduleFilter = async (startDate?: Date, endDate?: Date
     }
 };
 
-export const fetchDoctorSchedule = async (): Promise<Appointment[]> => {
+export const fetchAppoinmentDetail = async (token: string): Promise<Appointment[]> => {
     try {
         const response = await axios.get(`${baseUrl}/doctors/appointments`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
             params: { type: 'confirmed' }
         });
         

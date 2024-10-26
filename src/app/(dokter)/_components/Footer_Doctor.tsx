@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
 
     return (
         <>
-            <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center h-[68px] bg-white p-4 shadow-md border-t-[1px]">
+            <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center h-[68px] bg-white p-4 border-t-[1px]">
                 <Link
                     href="/home"
                     className={`flex flex-col items-center ${

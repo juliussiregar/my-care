@@ -1,20 +1,21 @@
+// Schedule.tsx
 "use client";
-
-import { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Calendar from "./Calendar";
 import { useSession } from "next-auth/react";
-import { formatDate } from "@/utils/date";
+import { Appointment } from "@/types/appointment";
 
-interface ScheduleAvailability {
-    [key: string]: string;
+interface ScheduleProps {
+    selectedDate: string;
+    appointments: Appointment[];
+    onDateSelect: (date: Date) => void;
 }
 
 interface PatientSummaryProps {
     icon: string;
     label: string;
     count: number;
-    id: string;
 }
 
 const PatientSummaryCard: React.FC<PatientSummaryProps> = ({
@@ -46,39 +47,35 @@ const PatientSummaryCard: React.FC<PatientSummaryProps> = ({
     </div>
 );
 
-const TotalPatientsCard: React.FC<{ total: number }> = ({ total }) => (
-    <div className="w-[328px] h-[92px] border border-[#D7D7F8] rounded-xl gap-[8px] pt-4 pl-3 pb-4 space-y-3">
-        <div className="flex flex-row w-[304px] h-4 items-center space-x-1">
-            <Image src="/total.svg" alt="total" width={16} height={16} />
-            <p className="font-open-sans mt-1 text-left text-[10px] font-normal leading-[14px] tracking-[0.25px] w-[284px] h-[14px] text-[#3B4963]">
-                Total Pasien
-            </p>
-        </div>
-        <div className="flex flex-row items-center">
-            <h2 className="font-sarabun text-primary text-[24px] font-extrabold leading-[32px]">
-                {total}
-            </h2>
-            <p className="font-open-sans mt-1 text-left text-[14px] font-normal leading-[22px] tracking-[0.1px] text-[#3B4963] ml-1">
-                Pasien
-            </p>
-        </div>
-    </div>
-);
-
-const Schedule = () => {
+const Schedule: React.FC<ScheduleProps> = ({ selectedDate, appointments, onDateSelect }) => {
     const [showCalendar, setShowCalendar] = useState(false);
-    const [selectedDate, setSelectedDate] = useState("");
-    const [year] = useState(new Date().getFullYear());
-    const [month] = useState(new Date().getMonth());
-
     const { data: session } = useSession();
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth();
 
-    const availableSchedule = useMemo(
-        () =>
-            (session?.user?.availability_schedule as ScheduleAvailability) ||
-            {},
-        [session?.user?.availability_schedule]
-    );
+    const appointmentCounts = useMemo(() => {
+        const counts = {
+            outpatient: 0,
+            online: 0,
+            inpatient: 0
+        };
+
+        appointments.forEach(appointment => {
+            switch (appointment.appointment_type.toLowerCase()) {
+                case 'outpatient':
+                    counts.outpatient++;
+                    break;
+                case 'online':
+                    counts.online++;
+                    break;
+                case 'inpatient':
+                    counts.inpatient++;
+                    break;
+            }
+        });
+
+        return counts;
+    }, [appointments]);
 
     const patientSummary = useMemo(
         () => [
@@ -86,34 +83,26 @@ const Schedule = () => {
                 id: "outpatient",
                 icon: "/outpatient.svg",
                 label: "Outpatient",
-                count: 5,
+                count: appointments.length,
             },
-            { id: "online", icon: "/online.svg", label: "Online", count: 1 },
+            {
+                id: "online",
+                icon: "/online.svg",
+                label: "Online",
+                count: appointmentCounts.online,
+            },
             {
                 id: "inpatient",
                 icon: "/inpatient.svg",
                 label: "Inpatient",
-                count: 2,
+                count: appointmentCounts.inpatient,
             },
         ],
-        []
+        [appointmentCounts, appointments.length]
     );
 
-    const setDefaultDate = useCallback(() => {
-        const today = new Date();
-        const formattedDate = formatDate(today);
-        setSelectedDate(formattedDate);
-    }, []);
-
-    useEffect(() => {
-        if (Object.keys(availableSchedule).length > 0) {
-            setDefaultDate();
-        }
-    }, [availableSchedule, setDefaultDate]);
-
     const handleDateSelect = (date: Date) => {
-        const formattedDate = formatDate(date);
-        setSelectedDate(formattedDate);
+        onDateSelect(date);
         setShowCalendar(false);
     };
 
@@ -151,7 +140,7 @@ const Schedule = () => {
                     year={year}
                     month={month}
                     onDateSelect={handleDateSelect}
-                    doctorSchedule={availableSchedule}
+                    doctorSchedule={session?.user?.availability_schedule ?? {}}
                     onClose={() => setShowCalendar(false)}
                 />
             )}
@@ -162,7 +151,22 @@ const Schedule = () => {
                 ))}
             </div>
 
-            <TotalPatientsCard total={8} />
+            <div className="w-[328px] h-[92px] border border-[#D7D7F8] rounded-xl gap-[8px] pt-4 pl-3 pb-4 space-y-3">
+                <div className="flex flex-row w-[304px] h-4 items-center space-x-1">
+                    <Image src="/total.svg" alt="total" width={16} height={16} />
+                    <p className="font-open-sans mt-1 text-left text-[10px] font-normal leading-[14px] tracking-[0.25px] w-[284px] h-[14px] text-[#3B4963]">
+                        Total Pasien
+                    </p>
+                </div>
+                <div className="flex flex-row items-center">
+                    <h2 className="font-sarabun text-primary text-[24px] font-extrabold leading-[32px]">
+                        {appointments.length}
+                    </h2>
+                    <p className="font-open-sans mt-1 text-left text-[14px] font-normal leading-[22px] tracking-[0.1px] text-[#3B4963] ml-1">
+                        Pasien
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };
