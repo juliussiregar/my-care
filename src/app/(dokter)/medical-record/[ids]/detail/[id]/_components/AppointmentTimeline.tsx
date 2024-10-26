@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { fetchAppoinmentDetail } from "../../../../../../../../pages/api/doctor";
 
 interface Appointment {
@@ -23,6 +24,8 @@ const AppointmentTimeline = () => {
     const { data: session } = useSession();
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
+    const searchParams = useSearchParams();
+    const patientName = searchParams?.get('patient');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,8 +38,16 @@ const AppointmentTimeline = () => {
             try {
                 const fetchedAppointments = await fetchAppoinmentDetail(session.user.jwt);
                 
+                // Filter appointments by patient_name if provided
+                let filteredAppointments = fetchedAppointments;
+                if (patientName) {
+                    filteredAppointments = fetchedAppointments.filter(
+                        (appointment: Appointment) => appointment.patient_name === patientName
+                    );
+                }
+                
                 // Sort appointments by date
-                const sortedAppointments = fetchedAppointments.sort((a: Appointment, b: Appointment) => {
+                const sortedAppointments = filteredAppointments.sort((a: Appointment, b: Appointment) => {
                     return new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime();
                 });
 
@@ -49,7 +60,7 @@ const AppointmentTimeline = () => {
         };
 
         fetchData();
-    }, [session]);
+    }, [session, patientName]);
 
     if (loading) {
         return (
@@ -96,7 +107,7 @@ const AppointmentTimeline = () => {
                 {appointment.doctor_name ?? "Dr. Romi"} • {appointment.specialist ?? "Dokter Gigi"}
             </p>
             <p className="text-[#6C7793] text-xs">
-                Outpatinet • {appointment.booking_id ?? "BF1234567"}
+                Outpatient • {appointment.booking_id ?? "BF1234567"}
             </p>
             {isPast && (
                 <div className="flex gap-4 mt-3 ml-5">

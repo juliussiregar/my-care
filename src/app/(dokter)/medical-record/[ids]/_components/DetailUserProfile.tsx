@@ -1,9 +1,11 @@
 "use client";
+// DetailUserProfile.tsx
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { fetchAppoinmentDetail } from "../../../../../../pages/api/doctor";
+
 interface AppointmentDetail {
     appointment_id: number;
     patient_name: string;
@@ -12,7 +14,6 @@ interface AppointmentDetail {
     appointment_time: string;
     appointment_type: string;
     status: string;
-    // tambahkan field lain yang diperlukan
     gender?: string;
     birth_date?: string;
     phone?: string;
@@ -41,10 +42,7 @@ const DetailUserProfile: React.FC = () => {
 
             setLoading(true);
             try {
-                // Fetch all appointments
                 const appointments = await fetchAppoinmentDetail(session.user.jwt);
-                
-                // Find the specific appointment by ID
                 const currentAppointment = appointments.find(
                     (appointment: AppointmentDetail) => 
                     appointment.appointment_id.toString() === appointmentId
@@ -68,7 +66,9 @@ const DetailUserProfile: React.FC = () => {
     }, [appointmentId, session]);
 
     const handleViewMedicalRecord = () => {
-        router.push(`/medical-record/${appointmentId}/detail/${appointmentId}`);
+        if (appointmentDetail?.patient_name) {
+            router.push(`/medical-record/${appointmentId}/detail/${appointmentId}?patient=${encodeURIComponent(appointmentDetail.patient_name)}`);
+        }
     };
 
     if (loading) {
@@ -126,7 +126,7 @@ const DetailUserProfile: React.FC = () => {
                     <span className="text-[#E0E4EC] mx-1 text-lg translate-y-[2px] inline-block">
                         •
                     </span>
-                    <h3>{customEmail ?? "faisalkemal@gmail.com"}</h3>
+                    <h3>{customEmail}</h3>
                 </div>
             </div>
 
