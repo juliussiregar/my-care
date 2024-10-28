@@ -1,10 +1,10 @@
-// src/app/(pasien)/_components/Details/PatientInfo.tsx
-
 import React, { useState } from 'react';
 import Image from 'next/image';
 import ToggleSwitch from '@/app/components/ToogleSwitch';
 import { useSession } from 'next-auth/react';
 import PatientDrawer from './PatientDrawer';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/store';
 
 interface PatientInfoProps {
     isOn: boolean;
@@ -14,9 +14,23 @@ interface PatientInfoProps {
 const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
     const { data: session } = useSession();
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+    const patientData = useSelector((state: RootState) => state.appointment);
 
     const openDrawer = () => setIsDrawerVisible(true);
     const closeDrawer = () => setIsDrawerVisible(false);
+
+    // Format date to display format
+    const formatDate = (dateString: string | null) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    };
+
+    const hasPatientData = patientData.name && patientData.phoneNumber && patientData.dateOfBirth;
 
     return (
         <div className='h-[136px] space-y-[12px]'>
@@ -49,6 +63,31 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
                             </div>
                             <Image src="/pencil.svg" alt='pencil' width={16} height={16} />
                         </>
+                    ) : hasPatientData ? (
+                        <>
+                            <div className='w-[268px] h-[36px] space-y-1'>
+                                <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
+                                    {patientData.name}
+                                </h3>
+                                <div className='flex flex-row space-x-[12px]'>
+                                    <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
+                                        +{patientData.phoneNumber}
+                                    </h3>
+                                    <Image src="/gray2.svg" alt='gray' width={6} height={6} />
+                                    <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-[#3B4963] text-left">
+                                        {formatDate(patientData.dateOfBirth)}
+                                    </h3>
+                                </div>
+                            </div>
+                            <Image 
+                                src="/pencil.svg" 
+                                alt='pencil' 
+                                width={16} 
+                                height={16} 
+                                className="cursor-pointer"
+                                onClick={openDrawer}
+                            />
+                        </>
                     ) : (
                         <>
                             <div
@@ -73,7 +112,7 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
                     )}
                 </div>
             </div>
-            <PatientDrawer isVisible={isDrawerVisible} onClose={closeDrawer} />
+            {isDrawerVisible && <PatientDrawer isVisible={isDrawerVisible} onClose={closeDrawer} />}
         </div>
     );
 };

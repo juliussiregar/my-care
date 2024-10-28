@@ -103,7 +103,12 @@ export default function Appointment() {
             appointment_date: appointmentDate,
             appointment_time: appointmentTime,
             type: selectedOption,
-            symtomps: null
+            symtomps: null,
+            name: null,
+            dateOfBirth: null,
+            phoneNumber: null,
+            email: null,
+            gender: null
         }));
 
         // Navigate to the next page

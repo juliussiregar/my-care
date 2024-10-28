@@ -1,6 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/app/store';
 
 interface PatientSummaryProps {
     type: string | null;
@@ -9,6 +11,33 @@ interface PatientSummaryProps {
 
 const PatientSummary: React.FC<PatientSummaryProps> = ({ type, symtomps }) => {
     const { data: session } = useSession();
+    const patientData = useSelector((state: RootState) => state.appointment);
+
+    // Fungsi untuk memformat tanggal
+    const formatDate = (dateString: string | null) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    };
+
+    // Fungsi untuk memformat nomor telepon
+    const formatPhoneNumber = (phoneNumber: string | null) => {
+        if (!phoneNumber) return '';
+        return phoneNumber.startsWith('62') ? `+${phoneNumber}` : phoneNumber;
+    };
+
+    // Data yang akan ditampilkan (prioritaskan data dari Redux)
+    const displayData = {
+        name: patientData.name || session?.user.patient_name || '',
+        gender: patientData.gender || 'Laki-laki', // Asumsi default
+        dateOfBirth: formatDate(patientData.dateOfBirth) || '1 September 1987',
+        phoneNumber: formatPhoneNumber(patientData.phoneNumber) || session?.user.patient_phonenumber || '',
+        email: patientData.email || session?.user.email || ''
+    };
 
     return (
         <div className='w-[328px] h-[248px] space-y-[12px]'>
@@ -27,7 +56,7 @@ const PatientSummary: React.FC<PatientSummaryProps> = ({ type, symtomps }) => {
                             Nama Lengkap
                         </h3>
                         <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left text-[#3B4963]">
-                            {session?.user.patient_name}
+                            {displayData.name}
                         </h3>
                     </div>
                     <div className='h-[16px] space-x-[4px] flex flex-row'>
@@ -35,9 +64,14 @@ const PatientSummary: React.FC<PatientSummaryProps> = ({ type, symtomps }) => {
                             Jenis Kelamin
                         </h3>
                         <div className='flex flex-row space-x-[2px]'>
-                            <Image src="/boy.svg" alt='boy' width={16} height={16} />
+                            <Image 
+                                src={displayData.gender === 'Laki-laki' ? "/boy.svg" : "/girl.svg"} 
+                                alt={displayData.gender === 'Laki-laki' ? 'boy' : 'girl'} 
+                                width={16} 
+                                height={16} 
+                            />
                             <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left text-[#3B4963]">
-                                Laki-laki
+                                {displayData.gender}
                             </h3>
                         </div>
                     </div>
@@ -46,7 +80,7 @@ const PatientSummary: React.FC<PatientSummaryProps> = ({ type, symtomps }) => {
                             Tanggal Lahir
                         </h3>
                         <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left text-[#3B4963]">
-                            1 September 1987
+                            {displayData.dateOfBirth}
                         </h3>
                     </div>
                     <div className='h-[16px] space-x-[4px] flex flex-row'>
@@ -54,7 +88,7 @@ const PatientSummary: React.FC<PatientSummaryProps> = ({ type, symtomps }) => {
                             No.HP
                         </h3>
                         <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left text-[#3B4963]">
-                            {session?.user.patient_phonenumber}
+                            {displayData.phoneNumber}
                         </h3>
                     </div>
                     <div className='h-[16px] space-x-[4px] flex flex-row'>
@@ -62,7 +96,7 @@ const PatientSummary: React.FC<PatientSummaryProps> = ({ type, symtomps }) => {
                             Email
                         </h3>
                         <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left text-[#3B4963]">
-                            {session?.user.email}
+                            {displayData.email}
                         </h3>
                     </div>
                     <div className='h-[16px] space-x-[4px] flex flex-row'>
