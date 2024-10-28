@@ -9,6 +9,7 @@ import { fetchAppoinmentDetail } from "../../../../../../../../pages/api/doctor"
 interface Appointment {
     appointment_id: number;
     appointment_date: string;
+    appointment_time: string;  // Tambahkan appointment_time
     patient_name: string;
     hospital?: string;
     doctor_name?: string;
@@ -26,6 +27,7 @@ const AppointmentTimeline = () => {
     const [loading, setLoading] = useState(true);
     const searchParams = useSearchParams();
     const patientName = searchParams?.get('patient');
+    const selectedDate = searchParams?.get('date'); // Tambahkan parameter date
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,7 +40,6 @@ const AppointmentTimeline = () => {
             try {
                 const fetchedAppointments = await fetchAppoinmentDetail(session.user.jwt);
                 
-                // Filter appointments by patient_name if provided
                 let filteredAppointments = fetchedAppointments;
                 if (patientName) {
                     filteredAppointments = fetchedAppointments.filter(
@@ -46,9 +47,10 @@ const AppointmentTimeline = () => {
                     );
                 }
                 
-                // Sort appointments by date
                 const sortedAppointments = filteredAppointments.sort((a: Appointment, b: Appointment) => {
-                    return new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime();
+                    const dateTimeA = new Date(`${a.appointment_date}T${a.appointment_time}`);
+                    const dateTimeB = new Date(`${b.appointment_date}T${b.appointment_time}`);
+                    return dateTimeB.getTime() - dateTimeA.getTime();
                 });
 
                 setAppointments(sortedAppointments);
@@ -70,17 +72,32 @@ const AppointmentTimeline = () => {
         );
     }
 
-    // Get current date for comparison
-    const currentDate = new Date();
+    const currentDateTime = new Date();
+    const selectedDateTime = selectedDate ? new Date(selectedDate) : currentDateTime;
 
-    // Separate upcoming and past appointments
-    const upcomingAppointment = appointments.find(appointment => 
-        new Date(appointment.appointment_date) >= currentDate
-    );
+    // Filter untuk upcoming appointment
+    const upcomingAppointments = appointments.filter(appointment => {
+        const appointmentDateTime = new Date(`${appointment.appointment_date}T${appointment.appointment_time}`);
+        
+        // Jika ada selectedDate, filter appointment pada tanggal tersebut yang belum lewat jamnya
+        if (selectedDate) {
+            const isSameDate = appointmentDateTime.toDateString() === selectedDateTime.toDateString();
+            const isUpcoming = appointmentDateTime >= currentDateTime;
+            return isSameDate && isUpcoming;
+        }
+        
+        // Jika tidak ada selectedDate, ambil appointment terdekat yang belum lewat
+        return appointmentDateTime >= currentDateTime;
+    });
 
-    const pastAppointments = appointments.filter(appointment =>
-        new Date(appointment.appointment_date) < currentDate
-    );
+    // Ambil appointment paling awal dari upcoming appointments
+    const upcomingAppointment = upcomingAppointments[upcomingAppointments.length - 1];
+
+    // Filter untuk past appointments
+    const pastAppointments = appointments.filter(appointment => {
+        const appointmentDateTime = new Date(`${appointment.appointment_date}T${appointment.appointment_time}`);
+        return appointmentDateTime < currentDateTime;
+    });
 
     const appointmentCard = (appointment: Appointment, isPast: boolean = false) => (
         <div className="bg-white rounded-[10px] p-4 border border-[#D7D7F8] my-2 cursor-pointer">
@@ -98,6 +115,8 @@ const AppointmentTimeline = () => {
                         month: 'long',
                         year: 'numeric'
                     })}
+                    {' • '}
+                    {appointment.appointment_time.substring(0, 5)} {/* Tampilkan jam */}
                 </span>
             </div>
             <h4 className="font-bold text-[#191F2A]">
@@ -160,13 +179,14 @@ const AppointmentTimeline = () => {
                 <div className="relative">
                     {/* Upcoming Appointments */}
                     {upcomingAppointment && (
-                        <div className="relative mb-4">
+                        <div className="relative">
                             <div className="absolute left-0 top-0 w-4 flex flex-col items-center">
                                 <Image
                                     src="/sand-clock.svg"
                                     alt="Upcoming appointments"
                                     width={16}
                                     height={16}
+                                    className="mb-2"
                                 />
                                 <div
                                     className="w-[1px] h-[133px] bg-[#C3C3F5]"
@@ -177,8 +197,8 @@ const AppointmentTimeline = () => {
                                     }}
                                 ></div>
                             </div>
-                            <h3 className="ml-6 font-bold">Upcoming appointment</h3>
                             <div className="ml-6">
+                                <h3 className="font-bold mb-2 text-[#3B4963]">Upcoming appointment</h3>
                                 <Link
                                     href={`/medical-record/${upcomingAppointment.appointment_id}/detail/${upcomingAppointment.appointment_id}/menu/${upcomingAppointment.appointment_id}`}
                                 >
