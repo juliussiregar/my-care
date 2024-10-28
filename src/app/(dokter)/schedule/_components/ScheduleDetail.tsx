@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { fetchAppointments } from "../../../../../pages/api/doctor";
 import { useRouter } from "next/navigation";
-import PinModal from "../../medical-record/[ids]/detail/[id]/_components/PinModal";
 
 interface AppointmentData {
     appointment_id: number;
@@ -53,8 +52,6 @@ const ScheduleDetail: React.FC<ScheduleDetailProps> = ({
 }) => {
     const [appointments, setAppointments] = useState<AppointmentData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
-    const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
     const { data: session } = useSession();
     const router = useRouter();
 
@@ -96,25 +93,8 @@ const ScheduleDetail: React.FC<ScheduleDetailProps> = ({
     }, [selectedDate, session]);
 
     const handlePatientClick = (appointmentId: number) => {
-        setSelectedAppointmentId(appointmentId);
-        setIsPinModalOpen(true);
-    };
-
-    const handlePinSubmit = (pin: string[]) => {
-        const enteredPin = pin.join("");
-        // Replace with actual pin validation
-        if (enteredPin === "123456") {
-            setIsPinModalOpen(false);
-            // Setelah PIN benar, arahkan ke DetailUserProfile
-            const selectedAppointment = appointments.find(
-                appointment => appointment.appointment_id === selectedAppointmentId
-            );
-            if (selectedAppointment) {
-                router.push(`/medical-record/${selectedAppointmentId}`);
-            }
-        } else {
-            alert("Invalid PIN");
-        }
+        // Directly navigate to the medical record page with the appointment ID
+        router.push(`/medical-record/${appointmentId}`);
     };
 
     const formatTime = (time: string) => {
@@ -188,13 +168,6 @@ const ScheduleDetail: React.FC<ScheduleDetailProps> = ({
                     </div>
                 )}
             </div>
-
-            {/* PIN Modal */}
-            <PinModal
-                isOpen={isPinModalOpen}
-                onClose={() => setIsPinModalOpen(false)}
-                onSubmit={handlePinSubmit}
-            />
         </div>
     );
 };

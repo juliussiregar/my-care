@@ -1,10 +1,10 @@
 "use client";
-// DetailUserProfile.tsx
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { fetchAppoinmentDetail } from "../../../../../../pages/api/doctor";
+import PinModal from "../detail/[id]/_components/PinModal";
 
 interface AppointmentDetail {
     appointment_id: number;
@@ -28,10 +28,13 @@ interface ActionButtonProps {
 const DetailUserProfile: React.FC = () => {
     const router = useRouter();
     const params = useParams();
+    const searchParams = useSearchParams();
     const { data: session } = useSession();
     const [appointmentDetail, setAppointmentDetail] = useState<AppointmentDetail | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isPinModalOpen, setIsPinModalOpen] = useState(false);
     const appointmentId = params?.ids as string;
+    const selectedDate = searchParams?.get('date'); // Ambil parameter date jika ada
 
     useEffect(() => {
         const fetchData = async () => {
@@ -66,8 +69,24 @@ const DetailUserProfile: React.FC = () => {
     }, [appointmentId, session]);
 
     const handleViewMedicalRecord = () => {
-        if (appointmentDetail?.patient_name) {
-            router.push(`/medical-record/${appointmentId}/detail/${appointmentId}?patient=${encodeURIComponent(appointmentDetail.patient_name)}`);
+        setIsPinModalOpen(true);
+    };
+
+    const handlePinSubmit = (pin: string[]) => {
+        const enteredPin = pin.join("");
+        // Replace with actual pin validation
+        if (enteredPin === "123456") {
+            setIsPinModalOpen(false);
+            if (appointmentDetail?.patient_name) {
+                const queryParams = new URLSearchParams();
+                queryParams.append('patient', appointmentDetail.patient_name);
+                if (selectedDate) {
+                    queryParams.append('date', selectedDate);
+                }
+                router.push(`/medical-record/${appointmentId}/detail/${appointmentId}?${queryParams.toString()}`);
+            }
+        } else {
+            alert("Invalid PIN");
         }
     };
 
@@ -141,6 +160,13 @@ const DetailUserProfile: React.FC = () => {
                     onClick={handleViewMedicalRecord}
                 />
             </div>
+
+            {/* PIN Modal */}
+            <PinModal
+                isOpen={isPinModalOpen}
+                onClose={() => setIsPinModalOpen(false)}
+                onSubmit={handlePinSubmit}
+            />
         </div>
     );
 };
