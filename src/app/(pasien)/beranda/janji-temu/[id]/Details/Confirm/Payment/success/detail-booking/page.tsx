@@ -1,14 +1,13 @@
-"use client";
+"use client"
+import React from 'react'
+import Header3 from './_components/Header3'
 import Image from 'next/image';
-import React from 'react';
-import { useRouter } from 'next/navigation';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/app/store';
 import { useSession } from 'next-auth/react';
 
-const Success = () => {
-    const router = useRouter();
+const Detail_Booking = () => {
     const { data: session } = useSession();
     const appointmentData = useSelector((state: RootState) => state.appointment);
 
@@ -45,16 +44,15 @@ const Success = () => {
 
     // Convert body to JSON string for QR code
     const qrData = JSON.stringify(body);
-
-    return (
-        <div className="flex flex-col min-h-screen pb-[68px]">
-            <div className='h-[56px] justify-end flex'>
+  return (
+    <div className="flex flex-col min-h-screen ">
+      <Header3 />
+      <div className='h-[56px] justify-end flex'>
                 <Image
                     src="/x.svg"
                     alt='x'
                     width={56}
                     height={56}
-                    onClick={() => router.push('/beranda')}
                     className="cursor-pointer"
                 />
             </div>
@@ -98,14 +96,12 @@ const Success = () => {
                     </button>
                     <button className='h-[32px] w-[169px] rounded-[8px] py-[5px] px-[12px] flex flex-row justify-center bg-white items-center space-x-2 border-[#0D0DCD] border'>
                         <span className='font-open-sans text-[14px] font-semibold leading-[22px] text-center text-[#0D0DCD]'
-                            onClick={() => router.push('success/detail-booking')}
                         >
                             Lihat Detail Booking
                         </span>
                     </button>
                     <button
                         className='h-[32px] w-[169px] rounded-[8px] py-[5px] px-[12px] flex flex-row justify-center bg-white items-center space-x-2 border-white border'
-                        onClick={() => router.push('/beranda')}
                     >
                         <span className='font-open-sans text-[14px] font-semibold leading-[22px] text-center text-[#0D0DCD]'>
                             Kembali Ke Beranda
@@ -113,8 +109,8 @@ const Success = () => {
                     </button>
                 </div>
             </div>
-        </div>
-    );
-};
+      </div>
+  )
+}
 
-export default Success;
+export default Detail_Booking
