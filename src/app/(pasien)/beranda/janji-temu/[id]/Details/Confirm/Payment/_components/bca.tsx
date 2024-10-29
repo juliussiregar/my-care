@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import Image from 'next/image';
 import React from 'react';
 import { useRouter } from 'next/navigation';
@@ -70,7 +71,7 @@ const Bca = ({ onBackToMethod }: { onBackToMethod: () => void }) => {
                 >
                     Metode Pembayaran
                 </span>
-                <div className='flex flex-row h-[54.86px] w-[328px] border-b items-center pl-4 space-x-4'>
+                <div className='flex flex-row h-[54.86px] w-[328px] border-b border-[#D7D7F8] items-center pl-4 space-x-4'>
                     <Image src="/bca2.svg" alt='bca2' width={32} height={22.86} />
                     <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-left text-[#191F2A]">
                         BCA Virtual Account
@@ -79,10 +80,44 @@ const Bca = ({ onBackToMethod }: { onBackToMethod: () => void }) => {
                 <h3 className="font-open-sans text-[12px] font-bold leading-[16px] tracking-[0.2px] text-left text-[#3B4963] p-[4px]">
                     Cara Pembayaran
                 </h3>
-                <div className='w-[328px] h-[270px]'>
-                    {/* Payment instructions... */}
+                <div className="w-[328px] h-[270px] text-left font-sans text-[10px] font-normal leading-[14px] tracking-[0.25px]">
+                    <div className='h-[42px] flex flex-row justify-between border-b border-[#D7D7F8] py-[12px] px-[8px]'>
+                        <h3 className="text-left font-sans text-[12px] font-normal leading-[16px] tracking-[0.2px]">
+                            ATM BCA
+                        </h3>
+                        <div className='flex flex-row space-x-1'>
+                            <Image src="/down2.svg"  alt='down' height={16} width={16}/>
+                            <Image src="/up.svg"  alt='down' height={16} width={16}/>
+                        </div>
+                    </div>
+                    <div className='h-[144px] py-[16px] px-[8px] border-b border-[#D7D7F8]'>
+                        <p>1. Insert your BCA ATM card and PIN</p>
+                        <p>2. Select Menu "Other Transaction". Select "Transfer". Select "To BCA Virtual Account"</p>
+                        <p>3. Enter Virtual Account Number. Press "Correct" to proceed</p>
+                        <p>4. Verify Virtual Account details and then enter amount to be transferred and select "Correct" to confirm</p>
+                        <p>5. Once the payment transaction is completed, this invoice will be updated automatically. This may take up to 5 minutes.</p>
+                    </div>
+                    <div className='h-[42px] flex flex-row justify-between border-b border-[#D7D7F8] py-[12px] px-[8px]'>
+                        <h3 className="text-left font-sans text-[12px] font-normal leading-[16px] tracking-[0.2px]">
+                            BCA MOBILE
+                        </h3>
+                        <div className='flex flex-row space-x-1'>
+                            <Image src="/down2.svg"  alt='down' height={16} width={16}/>
+                        </div>
+                    </div>
+                    <div className='h-[42px] flex flex-row justify-between border-b border-[#D7D7F8] py-[12px] px-[8px]'>
+                        <h3 className="text-left font-sans text-[12px] font-normal leading-[16px] tracking-[0.2px]">
+                            KlikBCA
+                        </h3>
+                        <div className='flex flex-row space-x-1'>
+                            <Image src="/down2.svg"  alt='down' height={16} width={16}/>
+                        </div>
+                    </div>
                 </div>
+
+
             </div>
+
             <div className='h-[98px] bg-white justify-center items-center flex'>
                 <button
                     onClick={handlePayment}
