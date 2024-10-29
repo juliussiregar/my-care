@@ -23,7 +23,7 @@ const Bca = ({ onBackToMethod }: { onBackToMethod: () => void }) => {
         }
 
         const patient_id = session.user.patient_id ?? 0;
-        const name = session.user.patient_name ?? 'Unknown';
+        const name = appointmentData.name ?? session.user.patient_name ?? 'Unknown';
 
         if (!appointmentData.doctor_id || !appointmentData.appointment_date || !appointmentData.appointment_time || !appointmentData.symtomps || !appointmentData.type) {
             console.log("Incomplete appointment data", appointmentData);
