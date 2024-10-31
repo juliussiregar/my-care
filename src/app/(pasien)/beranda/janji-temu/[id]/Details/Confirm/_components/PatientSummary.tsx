@@ -34,8 +34,8 @@ const PatientSummary: React.FC<PatientSummaryProps> = ({ type, symtomps }) => {
     const displayData = {
         name: patientData.name ?? session?.user.patient_name ?? '',
         gender: patientData.gender ?? 'Laki-laki', // Asumsi default
-        dateOfBirth: formatDate(patientData.dateOfBirth) ?? '1 September 1987',
-        phoneNumber: formatPhoneNumber(patientData.phoneNumber) ?? session?.user.patient_phonenumber ?? '',
+        dateOfBirth: formatDate(patientData.dateOfBirth) || '1 September 1987',
+        phoneNumber: formatPhoneNumber(patientData.phoneNumber) || session?.user.patient_phonenumber || '',
         email: patientData.email ?? session?.user.email ?? ''
     };
 
