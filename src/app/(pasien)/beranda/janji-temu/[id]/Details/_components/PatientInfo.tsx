@@ -15,6 +15,7 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
     const { data: session } = useSession();
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
     const patientData = useSelector((state: RootState) => state.appointment);
+    const [isDisabled, setIsDisabled] = useState(true);
 
     const openDrawer = () => setIsDrawerVisible(true);
     const closeDrawer = () => setIsDrawerVisible(false);
@@ -91,8 +92,8 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
                     ) : (
                         <>
                             <div
-                                className='w-[203px] h-[32px] space-x-[4px] flex flex-row items-start cursor-pointer'
-                                onClick={openDrawer}
+                                className='w-[203px] h-[32px] space-x-[4px] flex flex-row items-start'
+                                // onClick={openDrawer}
                             >
                                 <Image src="/warning.svg" alt='warning' width={16} height={16} />
                                 <h3 className="font-open-sans text-[12px] font-normal leading-[16px] tracking-[0.2px] text-[#DD403A] text-left">
@@ -100,19 +101,31 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
                                 </h3>
                             </div>
                             <div
-                                className='flex flex-row w-[81px] h-[24px] py-[2px] px-[8px] space-x-1 cursor-pointer'
-                                onClick={openDrawer}
+                                className={`flex flex-row w-[81px] h-[24px] py-[2px] px-[8px] space-x-1 ${
+                                    isDisabled
+                                        ? 'cursor-not-allowed opacity-50'
+                                        : 'cursor-pointer'
+                                }`}
+                                onClick={isDisabled ? undefined : openDrawer}
                             >
-                                <p className="font-open-sans text-[12px] font-semibold leading-[20px] text-center text-[#0D0DCD]">
+                                <p className={`font-open-sans text-[12px] font-semibold leading-[20px] text-center ${
+                                    isDisabled ? 'text-gray-400' : 'text-[#0D0DCD]'
+                                }`}>
                                     Isi data
                                 </p>
-                                <Image src="/right.svg" alt='right' width={14} height={14} />
+                                <Image
+                                    src="/right.svg"
+                                    alt='right'
+                                    width={14}
+                                    height={14}
+                                    className={isDisabled ? 'opacity-50' : ''}
+                                />
                             </div>
                         </>
                     )}
                 </div>
             </div>
-            {isDrawerVisible && <PatientDrawer isVisible={isDrawerVisible} onClose={closeDrawer} />}
+            {isDrawerVisible && <PatientDrawer isVisible={isDrawerVisible} onClose={closeDrawer}/>}
         </div>
     );
 };
