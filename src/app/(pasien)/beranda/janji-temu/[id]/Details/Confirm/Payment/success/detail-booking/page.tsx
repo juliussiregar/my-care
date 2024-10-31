@@ -94,12 +94,12 @@ const Detail_Booking = () => {
                             Unduh QR Code
                         </span>
                     </button>
-                    <button className='h-[32px] w-[169px] rounded-[8px] py-[5px] px-[12px] flex flex-row justify-center bg-white items-center space-x-2 border-[#0D0DCD] border'>
+                    {/* <button className='h-[32px] w-[169px] rounded-[8px] py-[5px] px-[12px] flex flex-row justify-center bg-white items-center space-x-2 border-[#0D0DCD] border'>
                         <span className='font-open-sans text-[14px] font-semibold leading-[22px] text-center text-[#0D0DCD]'
                         >
                             Lihat Detail Booking
                         </span>
-                    </button>
+                    </button> */}
                     <button
                         className='h-[32px] w-[169px] rounded-[8px] py-[5px] px-[12px] flex flex-row justify-center bg-white items-center space-x-2 border-white border'
                     >
