@@ -15,7 +15,7 @@ const PatientInfo: React.FC<PatientInfoProps> = ({ isOn, setIsOn }) => {
     const { data: session } = useSession();
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
     const patientData = useSelector((state: RootState) => state.appointment);
-    const [isDisabled, setIsDisabled] = useState(true);
+    const [isDisabled] = useState(true);
 
     const openDrawer = () => setIsDrawerVisible(true);
     const closeDrawer = () => setIsDrawerVisible(false);
